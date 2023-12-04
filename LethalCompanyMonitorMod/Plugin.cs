@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace LethalCompanyMonitorMod
 {
-    [BepInPlugin("krystall9.FastSwitchPlayerViewInRadar", "FastSwitchPlayerViewInRadar", "1.0.0")]
+    [BepInPlugin("krystall9.FastSwitchPlayerViewInRadar", "FastSwitchPlayerViewInRadar", "1.0.1")]
     [BepInProcess("Lethal Company.exe")]
     public class Plugin : BaseUnityPlugin
     {
