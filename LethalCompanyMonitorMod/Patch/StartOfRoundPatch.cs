@@ -10,12 +10,12 @@ namespace LethalCompanyMonitorMod.Patch
         [HarmonyPostfix]
         private static void GetAmountOfPlayersConnected(ref StartOfRound __instance) 
         {
-            if(Plugin.amountOfPlayers == __instance.ClientPlayerList.Count)
+            if(Plugin.AmountOfPlayers == __instance.ClientPlayerList.Count)
             {
                 return;
             }
             
-            Plugin.amountOfPlayers = __instance.ClientPlayerList.Count;
+            Plugin.AmountOfPlayers = __instance.ClientPlayerList.Count;
         }
     }
 }

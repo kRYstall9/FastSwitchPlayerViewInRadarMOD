@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine.InputSystem;
 
@@ -22,11 +21,10 @@ namespace LethalCompanyMonitorMod.Patch
                 if (String.Compare(text, "view monitor", true) == 0)
                 {
                     Plugin.Log.LogInfo("Radar Map Activated");
-                    Plugin.viewMonitorSubmitted = true;
+                    Plugin.ViewMonitorSubmitted = true;
                     return;
                 }
             }
-            Plugin.viewMonitorSubmitted = false;
         }
 
         [HarmonyPatch("Update")]
@@ -35,22 +33,44 @@ namespace LethalCompanyMonitorMod.Patch
         {
             if(!__instance.terminalInUse)
             {
-                if (Plugin.viewMonitorSubmitted)
+                if (Plugin.ViewMonitorSubmitted)
                 {
-                    Plugin.viewMonitorSubmitted = false;
+                    Plugin.CurrentlyViewingPlayer = 0;
+                    Plugin.FirstTimeInViewMonitor = true;
                 }
                 return;
-            }
-            if (Plugin.viewMonitorSubmitted)
+            }  
+
+            if (Plugin.ViewMonitorSubmitted)
             {
-                foreach (KeyValuePair<int, Key> kvp in Keybindings.allowedKeys)
+                var keyPressed = Array.Find(CustomActions.AllBinds, k => Keyboard.current[k.ConfigEntry.Value].wasPressedThisFrame);
+
+                if (keyPressed != null || keyPressed != default)
                 {
-                    if (Keyboard.current[kvp.Value].wasPressedThisFrame && kvp.Key < Plugin.amountOfPlayers)
+                    int connectedPlayers = Plugin.AmountOfPlayers;
+                    int currentlyViewingPlayer = Plugin.CurrentlyViewingPlayer;
+                    
+                    switch (keyPressed.Hotkey)
                     {
-                        Plugin.Log.LogInfo("Switching Radar to Player " + kvp.Key);
-                        UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen.SwitchRadarTargetAndSync(kvp.Key);
-                        return;
+
+                        case Key.LeftArrow:
+                            Plugin.CurrentlyViewingPlayer = currentlyViewingPlayer > 0 ? (currentlyViewingPlayer - 1) : (connectedPlayers - 1);
+                            break;
+                        case Key.RightArrow:
+                            Plugin.CurrentlyViewingPlayer = currentlyViewingPlayer < (connectedPlayers - 1) ? (currentlyViewingPlayer + 1) : 0;
+                            break;
+                        default:
+                            break;
+
                     }
+                    Plugin.Log.LogInfo("Switching Radar to Player " + Plugin.CurrentlyViewingPlayer);
+                    UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen.SwitchRadarTargetAndSync(Plugin.CurrentlyViewingPlayer);
+                }
+
+                if (Plugin.FirstTimeInViewMonitor)
+                {
+                    UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen.SwitchRadarTargetAndSync(0);
+                    Plugin.FirstTimeInViewMonitor = false;
                 }
             }
         }
