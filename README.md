@@ -11,6 +11,12 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
   - Bindable keys are now 2. The default binded keys are LeftArrow and RightArrow. LeftArrow let's you switch to the previous player's cam. RightArrow let's you switch to the next player's cam.
   - Cam is swappable without needing to type the keyword "view monitor" whenever the user leaves the terminal and then re-opens it.
+ 
+## Some ideas that might be "good to have" in game
+- [ ] Clock displayed on the terminal
+- [ ] Doors keyword (Opens or Closes the ship's doors)
+- [ ] Ship loot value displayed on the terminal
+- [ ] Moons's name red if you can't afford to buy the route, otherwise green
 
 ## Suggestions | Bug Reports
 
