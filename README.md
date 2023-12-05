@@ -16,7 +16,7 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 - [ ] Clock displayed on the terminal
 - [ ] Doors keyword (Opens or Closes the ship's doors)
 - [ ] Ship loot value displayed on the terminal
-- [ ] Moons's name red if you can't afford to buy the route, otherwise green
+- [ ] Moon name's red if you can't afford to buy the route, otherwise green
 
 ## Suggestions | Bug Reports
 
