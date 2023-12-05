@@ -12,3 +12,7 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
   - Bindable keys are now 2. The default binded keys are LeftArrow and RightArrow. LeftArrow let's you switch to the previous player's cam. RightArrow let's you switch to the next player's cam.
   - Cam is swappable without needing to type the keyword "view monitor" whenever the user leaves the terminal and then re-opens it.
 
+## Suggestions | Bug Reports
+
+If anything comes to your mind and want it to be added to this mod, or if there are some bugs popping out, feel free to leave a comment [here on discord](https://discord.com/channels/1168655651455639582/1181265352911503430)
+
