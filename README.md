@@ -7,7 +7,10 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.0.2 (Latest)
+* ### 1.0.3 (Latest)
+  - Radar boosters, like players, are now visible in the terminal map
+    
+* ### 1.0.2
 
   - Bindable keys are now 2. The default binded keys are LeftArrow and RightArrow. LeftArrow let's you switch to the previous player's cam. RightArrow let's you switch to the next player's cam.
   - Cam is swappable without needing to type the keyword "view monitor" whenever the user leaves the terminal and then re-opens it.
