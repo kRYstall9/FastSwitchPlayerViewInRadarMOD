@@ -14,10 +14,9 @@ namespace LethalCompanyMonitorMod
     {
         internal static Plugin Instance { get; private set; }
         internal static ManualLogSource Log { get; private set; }
-        internal static int AmountOfPlayers { get; set; } = 0;
         internal static bool ViewMonitorSubmitted { get;  set; } = false;
         internal static int CurrentlyViewingPlayer { get; set; } = 0;
-        internal static bool FirstTimeInViewMonitor { get; set; } = true;
+        internal static List<int> SelectableObjects { get; set; } = new List<int>();
 
         private void Awake()
         {
