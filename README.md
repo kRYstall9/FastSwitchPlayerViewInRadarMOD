@@ -7,7 +7,16 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.0.3 (Latest)
+*  ### 1.1.0 (Latest)
+    - Added a clock on the top-right corner of the Terminal
+    - Fixed a bug where being alone in a server resulted in some ArgumentOutOfRangeException while trying to switch radar map in the terminal
+    - The clock text comes with 3 different colors:
+      - Green (Default)
+      - Orange (In the afternoon the clock turns orange)
+      - Red (In the evening and night the clock turns red)
+      -  Each color is swappable by changing the Hex Color Code inside the config file having the name of this mod.
+
+* ### 1.0.3
   - Radar boosters, like players, are now visible in the terminal map
     
 * ### 1.0.2
@@ -16,7 +25,7 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
   - Cam is swappable without needing to type the keyword "view monitor" whenever the user leaves the terminal and then re-opens it.
  
 ## Some ideas that might be "good to have" in game
-- [ ] Clock displayed on the terminal
+- [x] Clock displayed on the terminal
 - [ ] Doors keyword (Opens or Closes the ship's doors)
 - [ ] Ship loot value displayed on the terminal
 - [ ] Moon name's red if you can't afford to buy the route, otherwise green
