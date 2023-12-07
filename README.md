@@ -32,5 +32,5 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Suggestions | Bug Reports
 
-If anything comes to your mind and want it to be added to this mod, or if there are some bugs popping out, feel free to leave a comment [here on discord](https://discord.com/channels/1168655651455639582/1181265352911503430)
+If anything comes to your mind and want it to be added to this mod, or if there are some bugs popping out, feel free to join [this discord](https://discord.gg/Zhp4jB9u) and leave a comment [in this channel](https://discord.com/channels/1168655651455639582/1181265352911503430).
 
