@@ -4,6 +4,8 @@ using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace LethalCompanyMonitorMod
@@ -16,7 +18,10 @@ namespace LethalCompanyMonitorMod
         internal static ManualLogSource Log { get; private set; }
         internal static bool ViewMonitorSubmitted { get;  set; } = false;
         internal static int CurrentlyViewingPlayer { get; set; } = 0;
+        internal static TextMeshProUGUI TerminalClockText { get; set; }
+        internal static GameObject ClockObject { get; set; }
         internal static List<int> SelectableObjects { get; set; } = new List<int>();
+        internal static List<ConfigEntry<Color>> ClockColors { get; set; } = new List<ConfigEntry<Color>> { };
 
         private void Awake()
         {
@@ -24,15 +29,26 @@ namespace LethalCompanyMonitorMod
             Log = base.Logger;
 
 
-            foreach(var bind in CustomActions.AllBinds)
+            foreach(var bind in Configs.AllBinds)
             {
                 var hotkey = Config.Bind(
                         bind.Section,
-                        bind.KeyName,
-                        bind.Hotkey,
+                        bind.Key,
+                        bind.DefaultValue,
                         bind.Description
                     );
                 bind.ConfigEntry = hotkey;
+            }
+            
+            foreach(var clockColor in Configs.TerminalClockColors) 
+            {
+                var color = Config.Bind(
+                        clockColor.Section,
+                        clockColor.Key,
+                        clockColor.DefaultValue,
+                        clockColor.Description
+                    );
+                clockColor.ConfigEntry = color;
             }
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
