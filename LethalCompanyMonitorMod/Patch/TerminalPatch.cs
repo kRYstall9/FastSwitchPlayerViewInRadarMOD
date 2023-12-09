@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using GameNetcodeStuff;
 using HarmonyLib;
 using TMPro;
 using UnityEngine;
@@ -12,38 +14,8 @@ namespace LethalCompanyMonitorMod.Patch
     public class TerminalPatch
     {
 
-        [HarmonyPatch("Start")]
-        [HarmonyPostfix]
-        public static void CreateClockObjectInstance(ref Terminal __instance)
-        {
-            Transform terminalContainer = ((Component)__instance).transform.parent.parent.Find("Canvas").Find("MainContainer");
-            try
-            {
-                if(Plugin.ClockObject == null)
-                {
-                    Plugin.Log.LogInfo("In the catch ");
-                    Plugin.ClockObject = UnityEngine.Object.Instantiate<GameObject>(((Component)terminalContainer.Find("CurrentCreditsNum")).gameObject, terminalContainer);
-                    ((UnityEngine.Object)Plugin.ClockObject).name = "ClockContainer";
-                    Plugin.ClockObject.transform.localPosition = new Vector3(240f, 205f, -1f);
-                    Plugin.ClockObject.transform.localScale = new Vector3(0.6f, 0.6f, 1f);
-                    Plugin.TerminalClockText = Plugin.ClockObject.GetComponent<TextMeshProUGUI>();
-                    ((TMP_Text)Plugin.TerminalClockText).text = " ";
-                    return;
-                }
-                Plugin.ClockObject = ((Component)terminalContainer.Find("ClockContainer")).gameObject;
-                Plugin.TerminalClockText = Plugin.ClockObject.GetComponent<TextMeshProUGUI>();
-            }
-            catch
-            {
-                Plugin.Log.LogError("Error while creating the clock object instance");
-                Plugin.ClockObject = null;
-                Plugin.TerminalClockText = null;
-            }
-        }
-
-
-        [HarmonyPostfix]
         [HarmonyPatch("ParsePlayerSentence")]
+        [HarmonyPostfix]
         private static void HandleSentence(ref Terminal __instance)
         {
             if (!__instance.terminalInUse)
@@ -76,14 +48,19 @@ namespace LethalCompanyMonitorMod.Patch
 
                 if (keyPressed != null || keyPressed != default)
                 {
-                    ManualCameraRenderer __manualCameraRendererInstance = UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen;
                     int currentlyViewingPlayer = Plugin.CurrentlyViewingPlayer;
                     int maxSpectablePlayers = Plugin.SelectableObjects.Count;
-                    int currentIndex = Plugin.SelectableObjects.IndexOf(currentlyViewingPlayer);
-                    
-                    if(maxSpectablePlayers <= 1)
+                    List<int> indexes = Plugin.SelectableObjects.Select(x => x.Value).ToList();
+                    int currentIndex = indexes.IndexOf(currentlyViewingPlayer);
+
+                    Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Viewing Player: {currentlyViewingPlayer}");
+                    Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Player Index: {currentIndex}");
+                    Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Max Spectable Players: {maxSpectablePlayers}");
+
+
+                    if (maxSpectablePlayers <= 1)
                     {
-                        Plugin.CurrentlyViewingPlayer = currentlyViewingPlayer;
+                        Plugin.CurrentlyViewingPlayer = Plugin.SelectableObjects.FirstOrDefault().Value;
                     }
                     else
                     {
@@ -91,17 +68,17 @@ namespace LethalCompanyMonitorMod.Patch
                         {
 
                             case Key.LeftArrow:
-                                Plugin.CurrentlyViewingPlayer = currentIndex > 0 ? Plugin.SelectableObjects[currentIndex - 1] : Plugin.SelectableObjects.Last();
+                                Plugin.CurrentlyViewingPlayer = currentIndex > 0 ? indexes[currentIndex - 1] : indexes.Last();
                                 break;
                             case Key.RightArrow:
-                                Plugin.CurrentlyViewingPlayer = currentIndex < (maxSpectablePlayers - 1) ? Plugin.SelectableObjects[currentIndex + 1] : Plugin.SelectableObjects.First();
+                                Plugin.CurrentlyViewingPlayer = currentIndex < (maxSpectablePlayers - 1) ? indexes[currentIndex + 1] : indexes.First();
                                 break;
                             default:
                                 break;
 
                         }
                     }
-                    
+                    Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | Switching to player " + Plugin.CurrentlyViewingPlayer);
                     UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen.SwitchRadarTargetAndSync(Plugin.CurrentlyViewingPlayer);
                 }
             }

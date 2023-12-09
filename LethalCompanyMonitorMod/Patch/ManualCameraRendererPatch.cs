@@ -10,23 +10,47 @@ namespace LethalCompanyMonitorMod.Patch
     [HarmonyPatch(typeof(ManualCameraRenderer))]
     public class ManualCameraRendererPatch
     {
+
         [HarmonyPatch("AddTransformAsTargetToRadar")]
         [HarmonyPostfix]
         static void GetSelectableObjects(ref ManualCameraRenderer __instance) 
         {
-            int index = 0;
-            for(int i=0; i< __instance.radarTargets.Count; i++)
+            int added = 0;
+            for (int i = 0; i < __instance.radarTargets.Count; i++)
             {
                 var target = __instance.radarTargets[i];
-                if(target.name.StartsWith("Player", StringComparison.OrdinalIgnoreCase))
+
+                if (target.isNonPlayer)
                 {
-                    index++;
+                    Dictionary<string, int> r = new Dictionary<string, int>();
+                    r.Add(target.name, i);
+                    if (!Plugin.SelectableObjects.ContainsKey(target.name))
+                    {
+                        Plugin.SelectableObjects.Add(target.name, i);
+                        added++;
+                    }
+                    else if(Plugin.SelectableObjects.ContainsKey(target.name))
+                    {
+                        Plugin.SelectableObjects[target.name] = i;
+                    }
                     continue;
                 }
-                if(!Plugin.SelectableObjects.Contains(index))
-                    Plugin.SelectableObjects.Add(index);
-                index++;
+
+                var targetComponent = target.transform.GetComponent<PlayerControllerB>();
+                if (targetComponent.playerSteamId != 0 && !targetComponent.disconnectedMidGame && !Plugin.SelectableObjects.ContainsKey(targetComponent.playerUsername))
+                {
+                    Plugin.SelectableObjects.Add(targetComponent.playerUsername, i);
+                    added++;
+                }
+                else if(
+                        targetComponent.playerSteamId != 0 && !targetComponent.disconnectedMidGame && Plugin.SelectableObjects.ContainsKey(targetComponent.playerUsername))
+                {
+                    Plugin.SelectableObjects[targetComponent.playerUsername] = i;
+                }
             }
+            string text = added > 0 ? "players" : "player";
+            Plugin.Log.LogInfo($"Method - GetSelectableObjects | {added} more {text} can be selected in the radar");
+
         }
 
     }

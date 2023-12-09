@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -18,10 +19,7 @@ namespace LethalCompanyMonitorMod
         internal static ManualLogSource Log { get; private set; }
         internal static bool ViewMonitorSubmitted { get;  set; } = false;
         internal static int CurrentlyViewingPlayer { get; set; } = 0;
-        internal static TextMeshProUGUI TerminalClockText { get; set; }
-        internal static GameObject ClockObject { get; set; }
-        internal static List<int> SelectableObjects { get; set; } = new List<int>();
-        internal static List<ConfigEntry<Color>> ClockColors { get; set; } = new List<ConfigEntry<Color>> { };
+        internal static Dictionary<string, int> SelectableObjects { get; set; } = new Dictionary<string, int>();
 
         private void Awake()
         {
@@ -39,22 +37,28 @@ namespace LethalCompanyMonitorMod
                     );
                 bind.ConfigEntry = hotkey;
             }
-            
-            foreach(var clockColor in Configs.TerminalClockColors) 
-            {
-                var color = Config.Bind(
-                        clockColor.Section,
-                        clockColor.Key,
-                        clockColor.DefaultValue,
-                        clockColor.Description
-                    );
-                clockColor.ConfigEntry = color;
-            }
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
 
             Logger.LogInfo($"krystall9.FastSwitchPlayerViewInRadar plugin has been loaded!");
 
+        }
+
+        public static List<string> disabledRadars()
+        {
+            return UnityEngine.Object.FindObjectsOfType<RadarBoosterItem>().Where(x=> x.radarEnabled == false).Select(x=> x.radarBoosterName).ToList();
+        }
+        public static void UpdateIndexes(List<TransformAndName> radarTargets)
+        {
+            int index = 0;
+            foreach (var radarTarget in radarTargets)
+            {
+                if (Plugin.SelectableObjects.ContainsKey(radarTarget.name) && Plugin.SelectableObjects[radarTarget.name] != index)
+                {
+                    Plugin.SelectableObjects[radarTarget.name] = index;
+                }
+                index++;
+            }
         }
     }
 }
