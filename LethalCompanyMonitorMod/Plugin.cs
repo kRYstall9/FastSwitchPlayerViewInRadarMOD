@@ -19,7 +19,6 @@ namespace LethalCompanyMonitorMod
         internal static ManualLogSource Log { get; private set; }
         internal static bool ViewMonitorSubmitted { get;  set; } = false;
         internal static int CurrentlyViewingPlayer { get; set; } = 0;
-        internal static Dictionary<string, int> SelectableObjects { get; set; } = new Dictionary<string, int>();
 
         private void Awake()
         {
@@ -42,23 +41,6 @@ namespace LethalCompanyMonitorMod
 
             Logger.LogInfo($"krystall9.FastSwitchPlayerViewInRadar plugin has been loaded!");
 
-        }
-
-        public static List<string> disabledRadars()
-        {
-            return UnityEngine.Object.FindObjectsOfType<RadarBoosterItem>().Where(x=> x.radarEnabled == false).Select(x=> x.radarBoosterName).ToList();
-        }
-        public static void UpdateIndexes(List<TransformAndName> radarTargets)
-        {
-            int index = 0;
-            foreach (var radarTarget in radarTargets)
-            {
-                if (Plugin.SelectableObjects.ContainsKey(radarTarget.name) && Plugin.SelectableObjects[radarTarget.name] != index)
-                {
-                    Plugin.SelectableObjects[radarTarget.name] = index;
-                }
-                index++;
-            }
         }
     }
 }
