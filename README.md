@@ -7,7 +7,11 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.2.1 (Latest)
+* ### 1.3.0 (Latest)
+    - Mod now fully supports the v45 of the game.
+    - The user can now choose which hotkey to use through the settings -> keybinds menu
+
+* ### 1.2.1
     - Addressed an issue where sometimes the cam wouldn't switch to the next or previous player
   
 * ### 1.2.0
