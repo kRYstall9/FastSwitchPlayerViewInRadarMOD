@@ -12,7 +12,6 @@ namespace LethalCompanyMonitorMod.Patch
         [HarmonyPrefix]
         public static void Rebind(IngamePlayerSettings __instance)
         {
-            List<KeyMappingModel> keys = new List<KeyMappingModel>();
             string actionName = __instance.rebindingOperation.action.name;
 
             Plugin.Log.LogInfo("Method - Rebind | Rebinding " + actionName);
