@@ -141,6 +141,8 @@ namespace LethalCompanyMonitorMod.Patch
                             __camInstance.SwitchRadarTargetAndSync(currentIndex);
                         }
                         Plugin.CurrentlyViewingPlayer = currentIndex;
+                        player = null;
+                        radarBooster = null;
                     }
                 }
                 catch(Exception e)
