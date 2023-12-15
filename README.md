@@ -5,6 +5,8 @@ The FastSwitchPlayerCamInRadar mod let's you switch each player's cam,while usin
 
 Pressing one of those keys automatically switches the radar cam to the chosen player's one without needing to type in the terminal the keyword "switch playerName".
 
+![](https://github.com/kRYstall9/FastSwitchPlayerViewInRadarMOD/blob/master/Switching%20Cam%20-%20Made%20with%20Clipchamp.gif)
+
 ## Change Log
 
 * ### 1.3.1 (Latest)
