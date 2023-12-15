@@ -7,7 +7,10 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.3.0 (Latest)
+* ### 1.3.1 (Latest)
+    - Addressed a case where misspelling "view monitor" or typing it backwards resulted in radar map successfully loaded but the user was not able to switch cams
+
+* ### 1.3.0
     - Mod now fully supports the v45 of the game.
     - The user can now choose which hotkey to use through the settings -> keybinds menu
 
