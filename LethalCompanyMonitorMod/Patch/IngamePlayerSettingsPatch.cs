@@ -46,7 +46,6 @@ namespace LethalCompanyMonitorMod.Patch
                 return;
             }
                 Plugin.SetAsset(Plugin.defaultKeys["Previous Cam"], Plugin.defaultKeys["Next Cam"]);
-            }
         }
     }
 }
