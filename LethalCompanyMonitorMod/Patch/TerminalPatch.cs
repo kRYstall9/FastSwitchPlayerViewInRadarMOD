@@ -18,32 +18,26 @@ namespace LethalCompanyMonitorMod.Patch
 
         [HarmonyPatch("ParsePlayerSentence")]
         [HarmonyPostfix]
-        private static void HandleSentence(ref Terminal __instance)
+        private static void HandleSentence(Terminal __instance, TerminalNode __result)
         {
-            if (!__instance.terminalInUse)
+            if (!__instance.terminalInUse || Plugin.ViewMonitorSubmitted)
                 return;
 
-            string text = __instance.screenText.text.Substring(__instance.screenText.text.Length - __instance.textAdded);
-            if (text.Length > 0)
+            if (String.Compare(__result.name, "ViewInsideShipCam 1", true) == 0)
             {
-                if (String.Compare(text, "view monitor", true) == 0)
-                {
-                    Plugin.Log.LogInfo("Radar Map Activated");
-                    Plugin.ViewMonitorSubmitted = true;
-                    return;
-                }
+                Plugin.ViewMonitorSubmitted = true;
             }
         }
 
         [HarmonyPatch("Update")]
         [HarmonyPostfix]
-        private static void HandleTerminalCameraNode(ref Terminal __instance)
+        private static void HandleTerminalCameraNode(Terminal __instance)
         {
             if (!__instance.terminalInUse)
             {
                 return;
             }
-            
+
             string bindsFromFile;
             List<string> bindsRead = new List<string>();
             if (File.Exists(Plugin.keyMappingPath))
@@ -54,7 +48,6 @@ namespace LethalCompanyMonitorMod.Patch
 
             if(Plugin.Asset == null || !Plugin.Asset.enabled)
             {
-                Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | InputActionAsset not yet created or enabled");
                 if (Plugin.Asset == null)
                 {
                     Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | InputActionAsset not yet created");
@@ -66,12 +59,14 @@ namespace LethalCompanyMonitorMod.Patch
                     {
                         Plugin.SetAsset(Plugin.defaultKeys["Previous Cam"], Plugin.defaultKeys["Next Cam"]);
                     }
+                    Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | InputActionAsset created successfully");
                 }
-                
-                if(Plugin.Asset != null)
+
+                if (Plugin.Asset != null)
                 {
                     Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | InputActionAsset not yet enabled");
                     Plugin.Asset.Enable();
+                    Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | InputActionAsset enabled successfully");
                 }
             }
 
@@ -87,11 +82,10 @@ namespace LethalCompanyMonitorMod.Patch
                         int currentIndex = Plugin.CurrentlyViewingPlayer;
                         ManualCameraRenderer __camInstance = UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen;
                         int maxSpectablePlayers = __camInstance.radarTargets.Count;
-                        bool stopLoop = false;
 
                         Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Max Spectable Players: {maxSpectablePlayers}");
 
-                        PlayerControllerB component = null;
+                        PlayerControllerB player = null;
                         RadarBoosterItem radarBooster = null;
 
                         for (int i = 0; i < __camInstance.radarTargets.Count; i++)
@@ -100,70 +94,39 @@ namespace LethalCompanyMonitorMod.Patch
                             {
                                 case "Previous Cam":
                                     currentIndex = GetRadarTargetIndex(currentIndex, __camInstance.radarTargets.Count);
-                                    Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Index: {currentIndex}");
-
-
-                                    if (__camInstance.radarTargets[currentIndex] == null)
-                                    {
-                                        Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | The player at the Index: {currentIndex} is null. Getting the nextIndex");
-                                        continue;
-                                    }
-
-                                    component = __camInstance.radarTargets[currentIndex].transform.gameObject.GetComponent<PlayerControllerB>();
-
-                                    if (component != null && (component.isPlayerControlled || component.isPlayerDead))
-                                    {
-                                        stopLoop = true;
-                                        break;
-                                    }
-                                    else if (component == null || !component.isPlayerControlled)
-                                    {
-                                        radarBooster = __camInstance.radarTargets[currentIndex].transform.gameObject.GetComponent<RadarBoosterItem>();
-                                        if (radarBooster != null && radarBooster.radarEnabled)
-                                        {
-                                            stopLoop = true;
-                                            break;
-                                        }
-                                    }
+                                    Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Current Index: {currentIndex}");
                                     break;
                                 case "Next Cam":
-
                                     currentIndex = GetRadarTargetIndex(currentIndex, __camInstance.radarTargets.Count, true);
                                     Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Current Index: {currentIndex}");
-
-
-                                    if (__camInstance.radarTargets[currentIndex] == null)
-                                    {
-                                        Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | The player at the Index: {currentIndex} is null. Getting the nextIndex");
-                                        continue;
-                                    }
-
-                                    component = __camInstance.radarTargets[currentIndex].transform.gameObject.GetComponent<PlayerControllerB>();
-
-                                    if (component != null && (component.isPlayerControlled || component.isPlayerDead))
-                                    {
-                                        stopLoop = true;
-                                        break;
-                                    }
-                                    else if (component == null || !component.isPlayerControlled)
-                                    {
-                                        radarBooster = __camInstance.radarTargets[currentIndex].transform.gameObject.GetComponent<RadarBoosterItem>();
-                                        if (radarBooster != null && radarBooster.radarEnabled)
-                                        {
-                                            stopLoop = true;
-                                            break;
-                                        }
-                                    }
                                     break;
-
                                 default:
                                     break;
                             }
-                            if (stopLoop)
+
+                            if (__camInstance.radarTargets[currentIndex] == null)
+                            {
+                                Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | The player at the Index: {currentIndex} cannot be spectated. Getting the next player");
+                                continue;
+                            }
+                            GameObject gameObject = __camInstance.radarTargets[currentIndex].transform.gameObject;
+                            gameObject.TryGetComponent<PlayerControllerB>(out player);
+
+                            if (player != null && (player.isPlayerControlled || player.isPlayerDead))
+                            {
                                 break;
+                            }
+                            else if (player == null || !player.isPlayerControlled)
+                            {
+                                gameObject.TryGetComponent<RadarBoosterItem>(out radarBooster);
+                                if (radarBooster != null && radarBooster.radarEnabled)
+                                {
+                                    break;
+                                }
+                            }
                         }
 
-                        if (__camInstance.radarTargets.Count > currentIndex && __camInstance.radarTargets[currentIndex] != null)
+                        if (maxSpectablePlayers > currentIndex && __camInstance.radarTargets[currentIndex] != null)
                         {
                             string playerUsername = "";
                             if (radarBooster != null)
@@ -172,7 +135,7 @@ namespace LethalCompanyMonitorMod.Patch
                             }
                             else
                             {
-                                playerUsername = __camInstance.radarTargets[currentIndex].transform.gameObject.GetComponent<PlayerControllerB>().playerUsername;
+                                playerUsername = player.playerUsername;
                             }
                             Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Switching cam to {playerUsername}");
                             __camInstance.SwitchRadarTargetAndSync(currentIndex);
@@ -182,7 +145,7 @@ namespace LethalCompanyMonitorMod.Patch
                 }
                 catch(Exception e)
                 {
-                    Plugin.Log.LogInfo(e.Message);
+                    Plugin.Log.LogInfo("Method - HandleTerminalCameraNode| Error: " + e.Message);
                 }
             }
         }

@@ -25,18 +25,6 @@ namespace LethalCompanyMonitorMod
             Instance = this;
             Log = base.Logger;
 
-
-            foreach(var bind in Configs.AllBinds)
-            {
-                var hotkey = Config.Bind(
-                        bind.Section,
-                        bind.Key,
-                        bind.DefaultValue,
-                        bind.Description
-                    );
-                bind.ConfigEntry = hotkey;
-            }
-
             defaultKeys.Add("Previous Cam" , "/Keyboard/LeftArrow");
             defaultKeys.Add("Next Cam", "/Keyboard/RightArrow");
 
