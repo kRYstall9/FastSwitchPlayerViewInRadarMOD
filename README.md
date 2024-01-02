@@ -9,7 +9,10 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.3.1 (Latest)
+* ### 1.3.2 (Latest)
+    - Addressed an issue that was causing a conflict with the "ExtraDaysToDeadline" mod
+      
+* ### 1.3.1 
     - Addressed a case where misspelling "view monitor" or typing it backwards resulted in radar map successfully loaded but the user was not able to switch cams
 
 * ### 1.3.0
