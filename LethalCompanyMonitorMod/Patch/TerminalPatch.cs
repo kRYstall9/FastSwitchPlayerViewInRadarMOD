@@ -20,7 +20,7 @@ namespace LethalCompanyMonitorMod.Patch
         [HarmonyPostfix]
         private static void HandleSentence(Terminal __instance, TerminalNode __result)
         {
-            if (!__instance.terminalInUse || Plugin.ViewMonitorSubmitted)
+            if (__result == null || !__instance.terminalInUse || Plugin.ViewMonitorSubmitted)
                 return;
 
             if (String.Compare(__result.name, "ViewInsideShipCam 1", true) == 0)
