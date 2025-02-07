@@ -9,7 +9,10 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 
 ## Change Log
 
-* ### 1.3.2 (Latest)
+* ### 1.3.3 (Latest)
+	- Fixed compatibility issues with the TwoRadarMaps Mod
+	
+* ### 1.3.2
     - Addressed an issue that was causing a conflict with the "ExtraDaysToDeadline" mod
       
 * ### 1.3.1 
@@ -53,4 +56,3 @@ Pressing one of those keys automatically switches the radar cam to the chosen pl
 ## Suggestions | Bug Reports
 
 If anything comes to your mind and want it to be added to this mod, or if there are some bugs popping out, feel free to join [this discord](https://discord.gg/Zhp4jB9u) and leave a comment [in this channel](https://discord.com/channels/1168655651455639582/1181265352911503430).
-
