@@ -1,9 +1,4 @@
-﻿using BepInEx.Configuration;
-using LethalCompanyMonitorMod.ConfigModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+﻿using LethalCompanyMonitorMod.ConfigModel;
 using UnityEngine.InputSystem;
 
 namespace LethalCompanyMonitorMod

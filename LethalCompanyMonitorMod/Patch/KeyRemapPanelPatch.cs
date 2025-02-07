@@ -1,9 +1,7 @@
 ﻿using HarmonyLib;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace LethalCompanyMonitorMod.Patch
