@@ -1,11 +1,9 @@
-﻿using System;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BepInEx;
-using GameNetcodeStuff;
-using HarmonyLib;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,40 +74,61 @@ namespace LethalCompanyMonitorMod.Patch
                 {
                     InputAction action = Plugin.Asset.Where(x => x.WasPressedThisFrame()).FirstOrDefault();
 
+                    if (Plugin.CameraRendererInstance == null)
+                    {
+                        // Check if TwoRadarMaps Mod is being used
+                        ManualCameraRenderer renderer = __instance.GetComponents<ManualCameraRenderer>().Where(x=> x.cam.name == "TerminalMapCamera").FirstOrDefault();
+                        if(renderer != null)
+                        {
+                            Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | TwoRadarMaps Camera Found");
+                            Plugin.CameraRendererInstance = renderer;
+                        }
+                        else
+                        {
+                            Plugin.Log.LogInfo("Method - HandleTerminalCameraNode | TwoRadarMaps Camera Not Found. Using Default Ship Camera");
+                            Plugin.CameraRendererInstance = UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen;
+                        }
+                    }
 
                     if (action != null || action != default)
                     {
                         int currentIndex = Plugin.CurrentlyViewingPlayer;
-                        ManualCameraRenderer __camInstance = UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen;
-                        int maxSpectablePlayers = __camInstance.radarTargets.Count;
 
+                        int maxSpectablePlayers = Plugin.CameraRendererInstance.radarTargets.Count;
+
+                        #if DEBUG
                         Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Currently Max Spectable Players: {maxSpectablePlayers}");
+                        #endif
 
                         PlayerControllerB player = null;
                         RadarBoosterItem radarBooster = null;
 
-                        for (int i = 0; i < __camInstance.radarTargets.Count; i++)
+                        for (int i = 0; i < maxSpectablePlayers; i++)
                         {
                             switch (action.name)
                             {
                                 case "Previous Cam":
-                                    currentIndex = GetRadarTargetIndex(currentIndex, __camInstance.radarTargets.Count);
+                                    currentIndex = GetRadarTargetIndex(currentIndex, maxSpectablePlayers);
+                                    #if DEBUG
                                     Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Current Index: {currentIndex}");
+                                    #endif
                                     break;
                                 case "Next Cam":
-                                    currentIndex = GetRadarTargetIndex(currentIndex, __camInstance.radarTargets.Count, true);
+                                    currentIndex = GetRadarTargetIndex(currentIndex, maxSpectablePlayers, true);
+                                    #if DEBUG
                                     Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Current Index: {currentIndex}");
+                                    #endif
                                     break;
                                 default:
                                     break;
                             }
 
-                            if (__camInstance.radarTargets[currentIndex] == null)
+                            if (Plugin.CameraRendererInstance.radarTargets[currentIndex] == null)
                             {
-                                Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | The player at the Index: {currentIndex} cannot be spectated. Getting the next player");
+                                Plugin.Log.LogWarning($"Method - HandleTerminalCameraNode | The player at the Index: {currentIndex} cannot be spectated. Getting the next player");
                                 continue;
                             }
-                            GameObject gameObject = __camInstance.radarTargets[currentIndex].transform.gameObject;
+                            GameObject gameObject = Plugin.CameraRendererInstance.radarTargets[currentIndex].transform.gameObject;
                             gameObject.TryGetComponent<PlayerControllerB>(out player);
 
                             if (player != null && (player.isPlayerControlled || player.isPlayerDead))
@@ -126,7 +145,7 @@ namespace LethalCompanyMonitorMod.Patch
                             }
                         }
 
-                        if (maxSpectablePlayers > currentIndex && __camInstance.radarTargets[currentIndex] != null)
+                        if (maxSpectablePlayers > currentIndex && Plugin.CameraRendererInstance.radarTargets[currentIndex] != null)
                         {
                             string playerUsername = "";
                             if (radarBooster != null)
@@ -138,7 +157,7 @@ namespace LethalCompanyMonitorMod.Patch
                                 playerUsername = player.playerUsername;
                             }
                             Plugin.Log.LogInfo($"Method - HandleTerminalCameraNode | Switching cam to {playerUsername}");
-                            __camInstance.SwitchRadarTargetAndSync(currentIndex);
+                            Plugin.CameraRendererInstance.SwitchRadarTargetAndSync(currentIndex);
                         }
                         Plugin.CurrentlyViewingPlayer = currentIndex;
                         player = null;
@@ -147,7 +166,7 @@ namespace LethalCompanyMonitorMod.Patch
                 }
                 catch(Exception e)
                 {
-                    Plugin.Log.LogInfo("Method - HandleTerminalCameraNode| Error: " + e.Message);
+                    Plugin.Log.LogError("Method - HandleTerminalCameraNode| Error: " + e.Message);
                 }
             }
         }

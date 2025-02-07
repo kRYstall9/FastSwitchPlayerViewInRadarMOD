@@ -19,6 +19,7 @@ namespace LethalCompanyMonitorMod
         internal static InputActionAsset Asset;
         internal static string keyMappingPath = Application.persistentDataPath + "/switch_radar_cam.txt";
         internal static Dictionary<string, string> defaultKeys = new Dictionary<string, string>();
+        internal static ManualCameraRenderer CameraRendererInstance { get; set; } = null;
 
         private void Awake()
         {
