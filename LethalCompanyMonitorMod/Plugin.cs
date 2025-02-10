@@ -4,11 +4,11 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace LethalCompanyMonitorMod
 {
     [BepInPlugin(PluginStaticInfo.PLUGIN_GUID, PluginStaticInfo.PLUGIN_NAME, PluginStaticInfo.PLUGIN_VERSION)]
+    [BepInDependency("com.rune580.LethalCompanyInputUtils", BepInDependency.DependencyFlags.HardDependency)]
     [BepInProcess("Lethal Company.exe")]
     public class Plugin : BaseUnityPlugin
     {
@@ -16,28 +16,20 @@ namespace LethalCompanyMonitorMod
         internal static ManualLogSource Log { get; private set; }
         internal static bool ViewMonitorSubmitted { get;  set; } = false;
         internal static int CurrentlyViewingPlayer { get; set; } = 0;
-        internal static InputActionAsset Asset;
-        internal static string keyMappingPath = Application.persistentDataPath + "/switch_radar_cam.txt";
-        internal static Dictionary<string, string> defaultKeys = new Dictionary<string, string>();
         internal static ManualCameraRenderer CameraRendererInstance { get; set; } = null;
+        internal static KeyBindings KeyBindingsInstance;
+        internal static bool TwoRadarMapsFound { get; set; } = false;
 
         private void Awake()
         {
             Instance = this;
             Log = base.Logger;
-
-            defaultKeys.Add("Previous Cam" , "/Keyboard/LeftArrow");
-            defaultKeys.Add("Next Cam", "/Keyboard/RightArrow");
+            KeyBindingsInstance = new();
 
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
 
-            Logger.LogInfo($"{PluginStaticInfo.PLUGIN_GUID} plugin has been loaded!");
+            Logger.LogInfo($"{PluginStaticInfo.PLUGIN_NAME} plugin is loaded!");
 
-        }
-        
-        public static void SetAsset(string previousCam, string nextCam)
-        {
-            Plugin.Asset = InputActionAsset.FromJson("\r\n                {\r\n                    \"maps\" : [\r\n                        {\r\n                            \"name\" : \"FastSwitchPlayerViewInRadar\",\r\n                            \"actions\": [\r\n                                {\"name\": \"Previous Cam\", \"type\" : \"button\"},\r\n                            {\"name\": \"Next Cam\", \"type\" : \"button\"}\r\n                            ],\r\n                            \"bindings\" : [\r\n                                {\"path\" : \"" + previousCam + "\", \"action\": \"Previous Cam\"},\r\n                            {\"path\" : \"" + nextCam + "\", \"action\": \"Next Cam\"}\r\n                            ]\r\n                        }\r\n                    ]\r\n                }");
         }
     }
 }

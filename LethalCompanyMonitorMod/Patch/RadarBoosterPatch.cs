@@ -9,10 +9,10 @@ namespace LethalCompanyMonitorMod.Patch
         [HarmonyPostfix]
         public static void RemovingUnusedRadar(ref RadarBoosterItem __instance)
         {
-            var __camInstance = UnityEngine.Object.FindObjectOfType<StartOfRound>().mapScreen;
-            Plugin.Log.LogInfo("Method - RemovingUnusedRadar | Current cam target name: " + __instance.radarBoosterName);
-            Plugin.Log.LogInfo($"Method - RemovingUnusedRadar | {__instance.radarBoosterName} removed");
-            Plugin.Log.LogInfo("Method - RemovingUnusedRadar | Updating camera target");
+            ManualCameraRenderer __camInstance = UnityEngine.Object.FindAnyObjectByType<StartOfRound>().mapScreen;
+            Plugin.Log.LogDebug("Method - RemovingUnusedRadar | Current cam target name: " + __instance.radarBoosterName);
+            Plugin.Log.LogDebug($"Method - RemovingUnusedRadar | {__instance.radarBoosterName} removed");
+            Plugin.Log.LogDebug("Method - RemovingUnusedRadar | Updating camera target");
             
             for (int i = 0; i < __camInstance.radarTargets.Count; i++) 
             {
@@ -23,7 +23,7 @@ namespace LethalCompanyMonitorMod.Patch
                 }
 
                 __camInstance.SwitchRadarTargetAndSync(Plugin.CurrentlyViewingPlayer);
-                Plugin.Log.LogInfo($"Method - RemovingUnusedRadar | Currently targeting {__camInstance.radarTargets[Plugin.CurrentlyViewingPlayer].name}");
+                Plugin.Log.LogDebug($"Method - RemovingUnusedRadar | Currently targeting {__camInstance.radarTargets[Plugin.CurrentlyViewingPlayer].name}");
                 return;
 
             }
