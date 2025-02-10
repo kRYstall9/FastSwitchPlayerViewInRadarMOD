@@ -1,15 +1,19 @@
 # FastSwitchPlayerViewInRadarMOD
 
 ## Overview
-The FastSwitchPlayerCamInRadar mod let's you switch each player's cam,while using the radar built in the in-game Terminal, by pressing some predefined hotkeys, such as:LeftArrow, RightArrow keys.
+The FastSwitchPlayerCamInRadar mod let's you switch each player's cam,while using the radar built in the in-game Terminal, by pressing some predefined hotkeys, such as:Left arrow, Right arrow keys.
+Players can change the hotkeys through the in-game keybindings menu to suit their preferences.
 
-Pressing one of those keys automatically switches the radar cam to the chosen player's one without needing to type in the terminal the keyword "switch playerName".
+Pressing one of these keys automatically switches the radar cam to the next/previous player's view without needing to type the keyword 'switch playerName' in the terminal.
 
 ![](https://github.com/kRYstall9/FastSwitchPlayerViewInRadarMOD/blob/master/Switching%20Cam%20-%20Made%20with%20Clipchamp.gif)
 
 ## Change Log
 
-* ### 1.3.3 (Latest)
+* ### 1.3.4 (Latest)
+	- Added support for the InputUtils mod
+
+* ### 1.3.3
 	- Fixed compatibility issues with the TwoRadarMaps Mod
 	
 * ### 1.3.2
